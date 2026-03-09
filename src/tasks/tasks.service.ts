@@ -12,8 +12,8 @@ export interface QueryOptions {
 export class TasksService {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
 
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    const newTask = new this.taskModel(createTaskDto);
+  async create(createTaskDto: CreateTaskDto, userId: string): Promise<Task> {
+    const newTask = new this.taskModel({ ...createTaskDto, userId });
     return await newTask.save();
   }
 
@@ -24,5 +24,13 @@ export class TasksService {
       Object.assign(query, filter);
     }
     return await this.taskModel.find(query).exec();
+  }
+
+  async findById(id: string): Promise<Task | null> {
+    return await this.taskModel.findById(id).exec();
+  }
+
+  async delete(id: string): Promise<Task | null> {
+    return await this.taskModel.findByIdAndDelete(id).exec();
   }
 }
