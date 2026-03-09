@@ -6,6 +6,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 
 export interface QueryOptions {
   status?: string;
+  userId?: string;
 }
 
 @Injectable()
@@ -18,11 +19,17 @@ export class TasksService {
   }
 
   async findAll(filter?: QueryOptions): Promise<Task[]> {
+    // Build the query object based on provided filters
     const query: QueryOptions = {};
 
     if (filter?.status) {
-      Object.assign(query, filter);
+      query.status = filter.status;
     }
+
+    if (filter?.userId) {
+      query.userId = filter.userId;
+    }
+
     return await this.taskModel.find(query).exec();
   }
 

@@ -15,7 +15,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskOwnerGuard } from './guards/task-owner.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
-interface RequestWithUser extends Request {
+export interface RequestWithUser extends Request {
   user: {
     userId: string;
     email: string;
@@ -36,8 +36,12 @@ export class TasksController {
   }
 
   @Get()
-  async findAllTasks(@Query('status') status?: string) {
-    return this.taskService.findAll({ status });
+  @UseGuards(JwtAuthGuard)
+  async findAllTasks(
+    @Req() req: RequestWithUser,
+    @Query('status') status?: string,
+  ) {
+    return this.taskService.findAll({ userId: req.user.userId, status });
   }
 
   @Delete(':id')
