@@ -16,6 +16,11 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
+  // Enable CORS for your frontend
+  app.enableCors({
+    origin: 'http://localhost:3001', // frontend URL
+    credentials: true,
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
